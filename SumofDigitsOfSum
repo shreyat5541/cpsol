@@ -1,0 +1,81 @@
+#include <bits/stdc++.h>
+
+
+using namespace std;
+//#define ll long long
+#define int long long
+//#define pii pair<int,int>
+//#define pb push_back
+//#define F first
+//#define S second
+//#define pyes cout<<"Yes\n"
+//#define pno cout<<"No\n"
+
+int digitSum(int a) {
+    string str = to_string(a);
+    int sum = 0;
+    for (char ch : str) {
+        sum += ch - '0';
+    }
+    return sum;
+}
+
+int lowerBound(const vector<int>& arr, int x) {
+    int left = 0, right = arr.size();
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] < x) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return left;
+}
+
+signed main() {
+    int n;
+    cin >> n;
+    
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+    }
+
+    vector<int> p = {1};
+    for (int i = 1; i <= 9; ++i) {
+        p.push_back(p.back() *10);
+    }
+    p.erase(p.begin());
+
+    vector<vector<int>> d;
+    for (int l : p) {
+        vector<int> s = a;
+        for (int& x : s) {
+            x %= l;
+        }
+        sort(s.begin(), s.end());
+        d.push_back(s);
+    }
+
+    int ds = 0;
+    
+    for (int x : a) {
+        ds += digitSum(x);
+    }
+
+    for (int x : a) {
+        int r = ds + n * digitSum(x);
+        for (int i = 0; i < p.size(); ++i) {
+            int lb = lowerBound(d[i], p[i] - (x % p[i]));
+            r -= 9 * (n - lb);
+        }
+        cout << r<< " ";
+    }
+
+    cout <<"\n";
+
+    return 0;
+}
+
+
